@@ -35,11 +35,13 @@ public class StepContainer {
         else background.setVisibility(View.VISIBLE);
         for (Map.Entry<Integer, RelativeLayout> entry : map.entrySet()) {
             Integer key = entry.getKey();
+            // закроем все шаги, кроме текущего
             if (needSetVisible) {
                 entry.getValue().setVisibility(View.GONE);
             }
             if (key.equals(step)) {
                 if (needSetVisible){
+                    // покажем или скроем текущий
                     if (needDeactivated) {
                         entry.getValue().setVisibility(View.GONE);
                     } else {
@@ -81,7 +83,7 @@ public class StepContainer {
         existStep(step, true, false);
     }
 
-    // Установка шага, как текущего
+    // закроем все шаги
     public void deactivateStep(Integer step) {
         existStep(step, true, true);
     }
