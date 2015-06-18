@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Uliana on 30.05.2015.
  */
 public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandler {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "md";
 
     // Опишем таблицы
@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandle
                 + SEQUENCE_CURRENT + " INTEGER PRIMARY KEY)";
 
         String CREATE_TABLE_DISEASE = "CREATE TABLE " + TABLE_DISEASE + "("
-                + DISEASE_ID + " INTEGER PRIMARY KEY," + DISEASE_NAME + " TEXT,"
+                + DISEASE_ID + " INTEGER PRIMARY KEY," + DISEASE_NAME + " TEXT," + DISEASE_ANNOTATION + " TEXT,"
                 + DISEASE_START + " INTEGER," + DISEASE_STATUS + " INTEGER"+ ")";
 
         String CREATE_TABLE_PILLS = "CREATE TABLE " + TABLE_PILLS + "("
@@ -95,8 +95,16 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandle
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-
+    public void onUpgrade(SQLiteDatabase db, int i, int i2) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DISEASE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PILL2DISEASE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PILLS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENCE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEMP);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEMP2DISEASE);
+        this.onCreate(db);
     }
 
     @Override
@@ -106,6 +114,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandle
         ContentValues values = new ContentValues();
         values.put(DISEASE_ID, diseaseId);
         values.put(DISEASE_NAME, disease.getName());
+        values.put(DISEASE_ANNOTATION, disease.getAnnotation());
         values.put(DISEASE_START, disease.getStartDate().getTime());
         values.put(DISEASE_STATUS, disease.getStatus());
         db.insert(TABLE_DISEASE, null, values);
