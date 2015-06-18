@@ -10,6 +10,7 @@ import java.util.Date;
  * Created by Uliana on 28.05.2015.
  */
 public class Disease {
+    private int id;
     private String name;
     private ArrayList<Pills> pills;
     private String annotation;
@@ -26,9 +27,19 @@ public class Disease {
         this.annotation = "";
     }
 
+    Disease(String name, String annotation, Date startDate) {
+        this.name = name;
+        this.annotation = (annotation == null) ? "Нет данных" : annotation;
+        this.startDate = startDate;
+    }
+
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setPills(ArrayList<Pills> pills) {
@@ -37,6 +48,10 @@ public class Disease {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getAnnotation() {

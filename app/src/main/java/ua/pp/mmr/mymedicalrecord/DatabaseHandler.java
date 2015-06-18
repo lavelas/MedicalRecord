@@ -8,13 +8,14 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Uliana on 30.05.2015.
  */
 public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandler {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "md";
 
     // Опишем таблицы
@@ -133,8 +134,20 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHandle
     }
 
     @Override
-    public List<Disease> getAllDiseases(int[] status) {
-        return null;
+    public ArrayList<Disease> getAllDiseases(int status) {
+        ArrayList<Disease> result = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  * FROM " + TABLE_DISEASE + " WHERE " + DISEASE_STATUS + " = " + status, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Disease disease = new Disease(cursor.getString(cursor.getColumnIndex(DISEASE_NAME)), cursor.getString(cursor.getColumnIndex(DISEASE_ANNOTATION)));
+                disease.setStartDate(new java.util.Date((long)cursor.getInt(cursor.getColumnIndex(DISEASE_START))*1000));
+                disease.setId(cursor.getInt(cursor.getColumnIndex(DISEASE_ID)));
+                disease.setStatus(status);
+                result.add(disease);
+            } while (cursor.moveToNext());
+        }
+        return result;
     }
 
     private int nextVal() {

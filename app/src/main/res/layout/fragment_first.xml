@@ -11,13 +11,15 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"/>
 
-    <RelativeLayout
+    <ListView
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/height_day_circle_layout"
+        android:layout_height="100dp"
         android:layout_above="@+id/add"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/diseasesList"></RelativeLayout>
+        android:background="#ffffff"
+        android:id="@+id/diseasesList"
+        android:orientation="vertical" />
 
     <ImageView android:layout_width="wrap_content"
         android:id="@+id/vi"
@@ -169,7 +171,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/name"
-                android:hint="Название заболевания" />
+                android:hint="@string/diseaseNameHint" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -177,7 +179,7 @@
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/annotation"
-                android:hint="Аннотация" />
+                android:hint="@string/diseaseAnnotationHint" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -185,7 +187,7 @@
                 android:inputType="date"
                 android:ems="10"
                 android:id="@+id/date"
-                android:hint="Дата начала" />
+                android:hint="@string/diseaseDateHint" />
         </LinearLayout>
 
         <LinearLayout
@@ -202,7 +204,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/back"
+                android:text="@string/cancle"
                 android:id="@+id/back"
                 android:layout_weight="1"
                 android:background="#ffa2001d" />
@@ -216,7 +218,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/next"
+                android:text="@string/save"
                 android:id="@+id/next"
                 android:layout_weight="1"
                 android:background="#ff63ceff" />
@@ -234,9 +236,31 @@
         android:id="@+id/addDiseaseStep2">
 
         <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/linearLayout2">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/namePill"
+                android:hint="@string/pillNameHint" />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout2"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="92dp"

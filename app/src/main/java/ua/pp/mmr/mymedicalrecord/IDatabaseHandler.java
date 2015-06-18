@@ -8,5 +8,5 @@ import java.util.zip.DataFormatException;
 public interface IDatabaseHandler {
     public int addDisease(Disease disease);
     public Disease getDisease(int id);
-    public List<Disease> getAllDiseases(int[] status);
+    public List<Disease> getAllDiseases(int status);
 }

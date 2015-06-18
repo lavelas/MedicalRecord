@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,12 +45,10 @@ public class FirstFragment extends Fragment {
         // Заполним контейнер шагами, с которыми будем работать
         RelativeLayout steps = (RelativeLayout) getActivity().findViewById(R.id.addDiseaseStep1);
         stepsInfo.addStep(1, steps);
-        steps = (RelativeLayout) getActivity().findViewById(R.id.addDiseaseStep2);
-        stepsInfo.addStep(2, steps);
-
     }
 
     private void createListeners(){
+        final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
         // Инициализируем слушатели всех кнопок
         // Кнопки далее/назад и установка даты шага 1
         Button next = (Button) getActivity().findViewById(R.id.next);
@@ -59,21 +58,22 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (stepsInfo.getCurrentStep() == 1) {
+                    EditText field = (EditText) getActivity().findViewById(R.id.name);
+                    String diseaseName = field.getText().toString();
+                    field = (EditText) getActivity().findViewById(R.id.annotation);
+                    String diseaseAnnotation = field.getText().toString();
+                    field = (EditText) getActivity().findViewById(R.id.date);
+                    Date diseaseDate = Utils.getInstance(null).getDateFromString(field.getText().toString());
 
+                    if (diseaseName == null || diseaseName.length() == 0 || diseaseAnnotation == null || diseaseAnnotation.length() == 0 || diseaseDate == null) {
+                        Utils.getInstance(null).showMessage("Заполните все необходимые поля");
+                    } else {
+                        db.addDisease(new Disease(diseaseName, diseaseAnnotation, diseaseDate));
+                        stepsInfo.deactivateStep(1);
+                        reloadDiseases();
+                    }
                 }
-                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-                EditText field = (EditText) getActivity().findViewById(R.id.name);
-                String diseaseName = field.getText().toString();
-                field = (EditText) getActivity().findViewById(R.id.annotation);
-                String diseaseAnnotation = field.getText().toString();
-                field = (EditText) getActivity().findViewById(R.id.date);
-                Date diseaseDate = Utils.getInstance(null).getDateFromString(field.getText().toString());
-                Disease d = new Disease(diseaseName,diseaseAnnotation);
-                d.setStartDate(diseaseDate);
-                //d.setStartDate(new Date());
-                db.addDisease(d);
-                db.getDisease(11);
-                stepsInfo.activateStep(2);
+
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -128,21 +128,10 @@ public class FirstFragment extends Fragment {
     }
 
     private void initialize() {
-        // Отображаем текущий день в виде шкалы, используя веса от 1 до 24
-        /*LinearLayout screenOffsetLeft = (LinearLayout) getActivity().findViewById(R.id.screenOffsetLeft);
-        LinearLayout screenOffsetRight = (LinearLayout) getActivity().findViewById(R.id.screenOffsetRight);
-        int partOfDay = utils.getPartOfDay();
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) screenOffsetLeft.getLayoutParams();
-        lp.weight = partOfDay;
-        screenOffsetLeft.setLayoutParams(lp);
-        lp = (LinearLayout.LayoutParams) screenOffsetRight.getLayoutParams();
-        lp.weight = 24 - partOfDay;
-        screenOffsetRight.setLayoutParams(lp);
-        screenOffsetLeft.setBackgroundColor(utils.getCurrentColorOfDay());*/
-
+        // Рисуем
         RelativeLayout dayCircleLayout = (RelativeLayout) getActivity().findViewById(R.id.dayCircle);
         dayCircleLayout.addView(new DayCircle(getActivity()));
-
+        reloadDiseases();
         // Анимация и слушатель на кнопке "Добавить"
         final ImageView iv = (ImageView) getActivity().findViewById(R.id.add);
         TextView currentDate = (TextView) getActivity().findViewById(R.id.currentDate);
@@ -166,5 +155,12 @@ public class FirstFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    private void reloadDiseases(){
+        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        ListView container = (ListView) getActivity().findViewById(R.id.diseasesList);
+        DiseaseListAdapter adapter = new DiseaseListAdapter(getActivity().getApplicationContext(), db.getAllDiseases(1));
+        container.setAdapter(adapter);
     }
 }
